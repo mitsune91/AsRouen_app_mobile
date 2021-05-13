@@ -20,6 +20,7 @@ export default function AuthNavigator() {
           component={LoginScreen}></AuthStack.Screen>
         <AuthStack.Screen
           name="Register"
+          options={{headerShown: false}}
           component={RegisterScreen}></AuthStack.Screen>
       </AuthStack.Navigator>
     </NavigationContainer>
