@@ -90,7 +90,7 @@ Password: ${password}`,
             <Button
               color="transparent"
               shadowless
-              onPress={() => navigation.navigate('Register')}>
+              onPress={() => navigation.navigate('RegisterUser')}>
               <Text
                 center
                 color={theme.COLORS.BASIC_BLUE}

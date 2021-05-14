@@ -1,13 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-  Alert,
   Dimensions,
   KeyboardAvoidingView,
   StyleSheet,
-  Platform,
-  Image,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
-
+import {arrowright} from 'react-native-vector-icons';
 // galio component
 import {Block, Button, Input, NavBar, Text} from 'galio-framework';
 import theme from '../theme';
@@ -15,80 +14,96 @@ import theme from '../theme';
 const {height, width} = Dimensions.get('window');
 
 const RegisterScreen = ({navigation}) => {
-  const [form, setForm] = useState({email: '', password: ''});
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    verficationPassword: '',
+  });
 
   return (
     <Block safe flex style={{backgroundColor: theme.COLORS.WHITE}}>
       <NavBar
-        back
+        leftIconSize={50}
         title="S'enregistrer"
         onLeftPress={() => navigation.navigate('Login')}
         titleStyle={{fontSize: 20}}
       />
       <KeyboardAvoidingView style={styles.container} behavior="height" enabled>
-        <Block
-          flex
-          center
-          style={{
-            marginTop: height * 0.05,
-            marginBottom: height * 0.1,
-          }}>
-          <Block
-            row
-            center
-            space="between"
-            style={{marginVertical: theme.SIZES.BASE * 1.875}}>
-            <Image
-              source={require('../assets/Images/Logo.png')}
-              style={{width: 150, height: 150}}></Image>
-          </Block>
-        </Block>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <Block flex={2} center space="evenly">
+            <Block flex={2}>
+              <Input
+                back
+                rounded
+                placeholder="Prénom"
+                style={{width: width * 0.9}}
+                onChangeText={text => setForm({...form, firstName: text})}
+                placeholderTextColor={theme.COLORS.BASIC_BLUE}
+              />
+              <Input
+                rounded
+                placeholder="Nom"
+                style={{width: width * 0.9}}
+                onChangeText={text => setForm({...form, lastName: text})}
+                placeholderTextColor={theme.COLORS.BASIC_BLUE}
+              />
+              <Input
+                rounded
+                type="email-address"
+                placeholder="Email"
+                autoCapitalize="none"
+                style={{width: width * 0.9}}
+                onChangeText={text => setForm({...form, email: text})}
+                placeholderTextColor={theme.COLORS.BASIC_BLUE}
+              />
+              <Input
+                rounded
+                password
+                viewPass
+                placeholder="Mot de passe"
+                style={{width: width * 0.9}}
+                onChangeText={text => setForm({...form, password: text})}
+                placeholderTextColor={theme.COLORS.BASIC_BLUE}
+              />
+              <Input
+                rounded
+                password
+                viewPass
+                placeholder="Confirmation du mot de passe"
+                style={{width: width * 0.9}}
+                onChangeText={text =>
+                  setForm({...form, verficationPassword: text})
+                }
+                placeholderTextColor={theme.COLORS.BASIC_BLUE}
+              />
 
-        <Block flex={2} center space="evenly">
-          <Block flex={2}>
-            <Input
-              rounded
-              type="email-address"
-              placeholder="Email"
-              autoCapitalize="none"
-              style={{width: width * 0.9}}
-              onChangeText={text => setEmail(text)}
-            />
-            <Input
-              rounded
-              password
-              viewPass
-              placeholder="Password"
-              style={{width: width * 0.9}}
-              onChangeText={text => setPassword(text)}
-            />
-            <Text
-              color={theme.COLORS.BASIC_BLUE}
-              size={theme.SIZES.FONT * 0.75}
-              onPress={() => Alert.alert('Not implemented')}
-              style={{
-                alignSelf: 'flex-end',
-                lineHeight: theme.SIZES.FONT * 2,
-              }}>
-              Forgot your password?
-            </Text>
+              <Text
+                color={theme.COLORS.BASIC_ORANGE}
+                size={theme.SIZES.FONT * 0.75}
+                style={{
+                  alignSelf: 'flex-end',
+                  lineHeight: theme.SIZES.FONT * 2,
+                }}>
+                Mot de passe oublié?
+              </Text>
+            </Block>
+            <Block flex middle>
+              <Button
+                round
+                size="large"
+                color={theme.COLORS.BASIC_ORANGE}
+                onPress={() =>
+                  navigation.navigate('RegisterAddressUser', {
+                    formUser: form,
+                  })
+                }>
+                Suivant
+              </Button>
+            </Block>
           </Block>
-          <Block flex middle>
-            <Button
-              round
-              size="large"
-              color={theme.COLORS.BASIC_ORANGE}
-              onPress={() =>
-                Alert.alert(
-                  'Sign in action',
-                  `Email: ${email}
-Password: ${password}`,
-                )
-              }>
-              Connexion
-            </Button>
-          </Block>
-        </Block>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </Block>
   );
