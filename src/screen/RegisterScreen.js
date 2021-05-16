@@ -6,25 +6,74 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {arrowright} from 'react-native-vector-icons';
 // galio component
 import {Block, Button, Input, NavBar, Text} from 'galio-framework';
 import theme from '../theme';
-
 const {height, width} = Dimensions.get('window');
 
 const RegisterScreen = ({navigation}) => {
   const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    verficationPassword: '',
+    firstName: null,
+    lastName: null,
+    email: null,
+    password: null,
+    verficationPassword: null,
   });
+  const [firstNameError, setFirstNameError] = useState();
+  const [lastNameError, setLastNameError] = useState();
+  const [emailError, setEmailError] = useState();
+  const [passwordError, setPasswordError] = useState();
+  const [verificationPasswordError, setVerificationPasswordError] = useState();
+
+  const goToAddress = () => {
+    let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    let firstNameError = '';
+    let lastNameError = '';
+    let emailError = '';
+    let passwordError = '';
+    let verificationPasswordError = '';
+
+    if (!form.firstName) {
+      firstNameError = 'Champ obligatoire';
+    }
+    if (!form.lastName) {
+      lastNameError = 'Champ obligatoire';
+    }
+    if (!form.email || !form.email.match(regexEmail)) {
+      emailError = ' Email non valide. Ex : Jean@mail.com';
+    }
+    if (!form.password || form.password.length < 6) {
+      passwordError = 'Minimum 6 caractères';
+    }
+    if (
+      !form.verficationPassword ||
+      form.verficationPassword !== form.password
+    ) {
+      verificationPasswordError = 'Les mots de passe doivent etre identique';
+    }
+    if (
+      firstNameError ||
+      lastNameError ||
+      emailError ||
+      passwordError ||
+      verificationPasswordError
+    ) {
+      setFirstNameError(firstNameError);
+      setLastNameError(lastNameError);
+      setEmailError(emailError);
+      setPasswordError(passwordError);
+      setVerificationPasswordError(verificationPasswordError);
+      return;
+    }
+    navigation.navigate('RegisterAddressUser', {
+      formUser: form,
+    });
+  };
 
   return (
     <Block safe flex style={{backgroundColor: theme.COLORS.WHITE}}>
       <NavBar
+        back
         leftIconSize={50}
         title="S'enregistrer"
         onLeftPress={() => navigation.navigate('Login')}
@@ -37,68 +86,80 @@ const RegisterScreen = ({navigation}) => {
               <Input
                 back
                 rounded
-                placeholder="Prénom"
+                placeholder="Prénom *"
                 style={{width: width * 0.9}}
                 onChangeText={text => setForm({...form, firstName: text})}
                 placeholderTextColor={theme.COLORS.BASIC_BLUE}
               />
+              {firstNameError && (
+                <Text color="red" size={11} italic style={{marginLeft: 20}}>
+                  {firstNameError}
+                </Text>
+              )}
               <Input
                 rounded
-                placeholder="Nom"
+                placeholder="Nom *"
                 style={{width: width * 0.9}}
                 onChangeText={text => setForm({...form, lastName: text})}
                 placeholderTextColor={theme.COLORS.BASIC_BLUE}
               />
+              {lastNameError && (
+                <Text color="red" size={11} italic style={{marginLeft: 20}}>
+                  {lastNameError}
+                </Text>
+              )}
               <Input
                 rounded
                 type="email-address"
-                placeholder="Email"
+                placeholder="Adresse email *"
                 autoCapitalize="none"
                 style={{width: width * 0.9}}
                 onChangeText={text => setForm({...form, email: text})}
                 placeholderTextColor={theme.COLORS.BASIC_BLUE}
               />
+              {emailError && (
+                <Text color="red" size={11} italic style={{marginLeft: 20}}>
+                  {emailError}
+                </Text>
+              )}
               <Input
                 rounded
                 password
                 viewPass
-                placeholder="Mot de passe"
+                placeholder="Mot de passe *"
                 style={{width: width * 0.9}}
                 onChangeText={text => setForm({...form, password: text})}
                 placeholderTextColor={theme.COLORS.BASIC_BLUE}
               />
+
+              {passwordError && (
+                <Text color="red" size={11} italic style={{marginLeft: 20}}>
+                  {passwordError}
+                </Text>
+              )}
               <Input
                 rounded
                 password
                 viewPass
-                placeholder="Confirmation du mot de passe"
+                placeholder="Confirmation du mot de passe *"
                 style={{width: width * 0.9}}
                 onChangeText={text =>
                   setForm({...form, verficationPassword: text})
                 }
                 placeholderTextColor={theme.COLORS.BASIC_BLUE}
               />
-
-              <Text
-                color={theme.COLORS.BASIC_ORANGE}
-                size={theme.SIZES.FONT * 0.75}
-                style={{
-                  alignSelf: 'flex-end',
-                  lineHeight: theme.SIZES.FONT * 2,
-                }}>
-                Mot de passe oublié?
-              </Text>
+              {verificationPasswordError && (
+                <Text color="red" size={11} italic style={{marginLeft: 20}}>
+                  {verificationPasswordError}
+                </Text>
+              )}
             </Block>
             <Block flex middle>
               <Button
                 round
                 size="large"
                 color={theme.COLORS.BASIC_ORANGE}
-                onPress={() =>
-                  navigation.navigate('RegisterAddressUser', {
-                    formUser: form,
-                  })
-                }>
+                onPress={() => goToAddress()}>
                 Suivant
               </Button>
             </Block>

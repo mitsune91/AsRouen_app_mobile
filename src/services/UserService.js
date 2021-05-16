@@ -31,16 +31,17 @@ async function register(firstName, lastName, email, password, address) {
 
     addresses: [],
   };
-  console.log('yo', user);
+
   return new Promise((resolve, reject) => {
     axios
-      .post(`http://localhost:8089/user/create`, user)
+      .post(`http://10.0.2.2:8090/user/create`, user)
       .then(response => {
+        console.log('ok', response.data);
         resolve(response.data);
       })
       .catch(error => {
         console.log(error);
-        reject(error?.response?.data);
+        reject(error);
       });
   });
 }

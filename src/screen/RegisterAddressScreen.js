@@ -14,7 +14,7 @@ import {add} from 'react-native-reanimated';
 const {height, width} = Dimensions.get('window');
 const RegisterScreen = ({route, navigation}) => {
   const {formUser} = route.params;
-  console.log(formUser);
+
   const [address, setAddress] = useState({
     city: '',
     country: '',
@@ -38,7 +38,7 @@ const RegisterScreen = ({route, navigation}) => {
         },
       ],
     };
-    console.log(user);
+
     userService
       .register(
         formUser.firstName,
@@ -48,7 +48,7 @@ const RegisterScreen = ({route, navigation}) => {
         address,
       )
       .then(response => {
-        console.log(response);
+        console.log('ok', response);
         navigation.navigate('Login');
       })
       .catch(error => {
