@@ -1,5 +1,5 @@
 const COLORS = {
-  BASIC_ORANGE: '#F18B5C',
+  BASIC_ORANGE: '#FF914B',
   BASIC_BLUE: '#5FC3E1',
   WHITE: '#FFFFFF',
   BLACK: '#000000',
@@ -21,6 +21,7 @@ const COLORS = {
   TWITTER: '#5BC0DE',
   DRIBBBLE: '#EA4C89',
   ICON: '#000000',
+  OUTLINED_ORANGE: '#FAAE7D',
 };
 
 const SIZES = {

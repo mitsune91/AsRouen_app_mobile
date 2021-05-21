@@ -1,5 +1,4 @@
 import {
-  CONNECT_USER,
   MODIFY_DEVICE,
   MODIFY_USER,
   SIGN_IN,
@@ -15,8 +14,6 @@ const initState = {
 
 export default (state = initState, action) => {
   switch (action.type) {
-    case CONNECT_USER:
-      return action.item;
     case SIGN_IN:
       return {
         ...state,

@@ -11,13 +11,19 @@ export default function DefaultInput({
   onChangeText,
   label,
   leftIcon,
+  styles,
+  errorMessage,
+  secureTextEntry,
 }) {
   return (
     <Input
+      secureTextEntry={secureTextEntry}
       placeholder={placeholder}
       onChangeText={onChangeText}
       label={label}
       leftIcon={leftIcon}
+      style={styles}
+      errorMessage={errorMessage}
     />
   );
 }

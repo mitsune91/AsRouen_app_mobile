@@ -9,10 +9,10 @@ async function login(email, password) {
   const user = {email: email.trim().toLowerCase(), password: password};
   return new Promise((resolve, reject) => {
     axios
-      .post(`http://localhost:8089/login`, user)
+      .post(`http://10.0.2.2:8090/login`, user)
       .then(response => {
         if (response && response.status === 200) {
-          resolve(response.data);
+          resolve(response.headers);
         } else {
           reject(response.data);
         }
@@ -34,7 +34,21 @@ async function register(firstName, lastName, email, password, address) {
 
   return new Promise((resolve, reject) => {
     axios
-      .post(`http://10.0.2.2:8090/user/create`, user)
+      .post(`http://10.0.2.2:8090/user`, user)
+      .then(response => {
+        console.log('ok', response.data);
+        resolve(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+        reject(error);
+      });
+  });
+}
+async function findUser(userId) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`http://10.0.2.2:8090/user/` + userId)
       .then(response => {
         console.log('ok', response.data);
         resolve(response.data);
@@ -48,4 +62,5 @@ async function register(firstName, lastName, email, password, address) {
 export const userService = {
   login,
   register,
+  findUser,
 };

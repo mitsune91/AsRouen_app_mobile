@@ -1,10 +1,10 @@
 import {MODIFY_DEVICE, MODIFY_USER, SIGN_IN, SIGN_OUT} from './actionTypes';
 
 export function signIn(data) {
-  return dispatch({
+  return {
     type: SIGN_IN,
     item: data,
-  });
+  };
 }
 
 export function signOut() {

@@ -2,12 +2,12 @@ import React, {createRef, useState, useRef} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 import RegisterScreen from '../screen/RegisterScreen';
-import RegisterAddressScreen from '../screen/RegisterAddressScreen';
+import HomeScreen from '../screen/HomeScreen';
 import LoginScreen from '../screen/LoginScreen';
 const AuthStack = createStackNavigator();
 export const navigationRef = createRef();
 export default function AuthNavigator() {
-  const [initialRouteName, setInitialRouteName] = useState('Home');
+  const [initialRouteName, setInitialRouteName] = useState('Login');
   const routeNameRef = useRef();
 
   return (
@@ -24,9 +24,9 @@ export default function AuthNavigator() {
           options={{headerShown: false}}
           component={RegisterScreen}></AuthStack.Screen>
         <AuthStack.Screen
-          name="RegisterAddressUser"
+          name="Home"
           options={{headerShown: false}}
-          component={RegisterAddressScreen}></AuthStack.Screen>
+          component={HomeScreen}></AuthStack.Screen>
       </AuthStack.Navigator>
     </NavigationContainer>
   );

@@ -1,12 +1,16 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {Provider} from 'react-redux';
 import store from './redux/store';
-import RootNavigator from './navigation/index';
+import RootNavigator from './navigation';
 
-export default function Root() {
-  return (
-    <Provider store={store}>
-      <RootNavigator />
-    </Provider>
-  );
+class Root extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <RootNavigator />
+      </Provider>
+    );
+  }
 }
+
+export default Root;

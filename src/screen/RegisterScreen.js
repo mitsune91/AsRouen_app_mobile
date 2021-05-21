@@ -1,14 +1,23 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Dimensions,
   KeyboardAvoidingView,
+  Pressable,
   StyleSheet,
+  View,
+  Platform,
   Keyboard,
-  TouchableWithoutFeedback,
+  ImageBackground,
 } from 'react-native';
+import {Text, Input} from 'react-native-elements';
+import {userService} from '../services/UserService';
 // galio component
-import {Block, Button, Input, NavBar, Text} from 'galio-framework';
 import theme from '../theme';
+import DefaultInput from '../components/DefaultInput';
+import DefaultIconButton from '../components/DefaultIconButton';
+import DefaultIcon from '../components/DefaultIcon';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 const {height, width} = Dimensions.get('window');
 
 const RegisterScreen = ({navigation}) => {
@@ -25,7 +34,7 @@ const RegisterScreen = ({navigation}) => {
   const [passwordError, setPasswordError] = useState();
   const [verificationPasswordError, setVerificationPasswordError] = useState();
 
-  const goToAddress = () => {
+  const validation = () => {
     let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     let firstNameError = '';
     let lastNameError = '';
@@ -35,21 +44,31 @@ const RegisterScreen = ({navigation}) => {
 
     if (!form.firstName) {
       firstNameError = 'Champ obligatoire';
+    } else {
+      firstNameError = '';
     }
     if (!form.lastName) {
       lastNameError = 'Champ obligatoire';
+    } else {
+      lastNameError = '';
     }
     if (!form.email || !form.email.match(regexEmail)) {
       emailError = ' Email non valide. Ex : Jean@mail.com';
+    } else {
+      emailError = '';
     }
     if (!form.password || form.password.length < 6) {
       passwordError = 'Minimum 6 caractères';
+    } else {
+      passwordError = '';
     }
     if (
       !form.verficationPassword ||
       form.verficationPassword !== form.password
     ) {
       verificationPasswordError = 'Les mots de passe doivent etre identique';
+    } else {
+      verificationPasswordError = '';
     }
     if (
       firstNameError ||
@@ -63,127 +82,162 @@ const RegisterScreen = ({navigation}) => {
       setEmailError(emailError);
       setPasswordError(passwordError);
       setVerificationPasswordError(verificationPasswordError);
-      return;
+      return false;
+    } else {
+      return true;
     }
-    navigation.navigate('RegisterAddressUser', {
-      formUser: form,
-    });
   };
-
+  const onSubmit = () => {
+    if (validation()) {
+      userService
+        .register(form.firstName, form.lastName, form.email, form.password)
+        .then(response => {
+          navigation.navigate('Login');
+        })
+        .catch(error => {
+          console.log('err', error);
+        });
+    } else {
+      validation();
+    }
+  };
   return (
-    <Block safe flex style={{backgroundColor: theme.COLORS.WHITE}}>
-      <NavBar
-        back
-        leftIconSize={50}
-        title="S'enregistrer"
-        onLeftPress={() => navigation.navigate('Login')}
-        titleStyle={{fontSize: 20}}
-      />
-      <KeyboardAvoidingView style={styles.container} behavior="height" enabled>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <Block flex={2} center space="evenly">
-            <Block flex={2}>
-              <Input
-                back
-                rounded
-                placeholder="Prénom *"
-                style={{width: width * 0.9}}
+    <KeyboardAvoidingView
+      style={{backgroundColor: theme.COLORS.WHITE}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ImageBackground
+          resizeMode="cover"
+          style={[
+            styles.container,
+            {
+              width: Dimensions.get('window').width,
+              height: Dimensions.get('window').height,
+            },
+          ]}
+          source={require('../assets/Images/wave.png')}>
+          <View style={styles.icon}>
+            <DefaultIcon
+              name="adduser"
+              type="antdesign"
+              size={40}
+              color="black"></DefaultIcon>
+          </View>
+          <View style={styles.containerForm}>
+            <Text h3 style={{marginBottom: width * 0.03}}>
+              Inscription
+            </Text>
+            <View style={{flexDirection: 'row', width: '50%'}}>
+              <DefaultInput
+                placeholder="Prénom"
+                onChangeText={text => console.log(text)}
+                leftIcon={{
+                  type: 'material',
+                  name: 'account-circle',
+                  color: 'gray',
+                }}
                 onChangeText={text => setForm({...form, firstName: text})}
-                placeholderTextColor={theme.COLORS.BASIC_BLUE}
+                errorMessage={firstNameError}
               />
-              {firstNameError && (
-                <Text color="red" size={11} italic style={{marginLeft: 20}}>
-                  {firstNameError}
-                </Text>
-              )}
-              <Input
-                rounded
-                placeholder="Nom *"
-                style={{width: width * 0.9}}
-                onChangeText={text => setForm({...form, lastName: text})}
-                placeholderTextColor={theme.COLORS.BASIC_BLUE}
-              />
-              {lastNameError && (
-                <Text color="red" size={11} italic style={{marginLeft: 20}}>
-                  {lastNameError}
-                </Text>
-              )}
-              <Input
-                rounded
-                type="email-address"
-                placeholder="Adresse email *"
-                autoCapitalize="none"
-                style={{width: width * 0.9}}
-                onChangeText={text => setForm({...form, email: text})}
-                placeholderTextColor={theme.COLORS.BASIC_BLUE}
-              />
-              {emailError && (
-                <Text color="red" size={11} italic style={{marginLeft: 20}}>
-                  {emailError}
-                </Text>
-              )}
-              <Input
-                rounded
-                password
-                viewPass
-                placeholder="Mot de passe *"
-                style={{width: width * 0.9}}
-                onChangeText={text => setForm({...form, password: text})}
-                placeholderTextColor={theme.COLORS.BASIC_BLUE}
-              />
-
-              {passwordError && (
-                <Text color="red" size={11} italic style={{marginLeft: 20}}>
-                  {passwordError}
-                </Text>
-              )}
-              <Input
-                rounded
-                password
-                viewPass
-                placeholder="Confirmation du mot de passe *"
-                style={{width: width * 0.9}}
+              <DefaultInput
+                placeholder="Nom"
+                leftIcon={{
+                  type: 'material',
+                  name: 'account-circle',
+                  color: 'gray',
+                }}
+                errorMessage={lastNameError}
                 onChangeText={text =>
-                  setForm({...form, verficationPassword: text})
-                }
-                placeholderTextColor={theme.COLORS.BASIC_BLUE}
-              />
-              {verificationPasswordError && (
-                <Text color="red" size={11} italic style={{marginLeft: 20}}>
-                  {verificationPasswordError}
+                  setForm({...form, lastName: text})
+                }></DefaultInput>
+            </View>
+
+            <DefaultInput
+              placeholder="Adresse email"
+              onChangeText={text => setForm({...form, email: text})}
+              leftIcon={{type: 'material', name: 'mail-outline', color: 'gray'}}
+              errorMessage={emailError}
+            />
+
+            <DefaultInput
+              secureTextEntry={true}
+              placeholder="Mot de passe"
+              leftIcon={{
+                type: 'material',
+                name: 'lock',
+                color: 'gray',
+              }}
+              onChangeText={text => setForm({...form, password: text})}
+              errorMessage={passwordError}></DefaultInput>
+
+            <DefaultInput
+              secureTextEntry={true}
+              placeholder="Confirmation mot de passe"
+              leftIcon={{
+                type: 'material',
+                name: 'lock-open',
+                color: 'gray',
+              }}
+              onChangeText={text =>
+                setForm({...form, verficationPassword: text})
+              }
+              errorMessage={verificationPasswordError}></DefaultInput>
+
+            <DefaultIconButton
+              icon={{
+                type: 'antdesign',
+                name: 'arrowright',
+                size: 30,
+                color: 'white',
+              }}
+              onPress={() => onSubmit()}
+              backgroundColor={theme.COLORS.BASIC_ORANGE}></DefaultIconButton>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'flex-end',
+              marginBottom: 36,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <Text style={{color: 'gray'}}>Vous avez deja un compte? </Text>
+              <Pressable onPress={() => navigation.navigate('Login')}>
+                <Text
+                  style={{
+                    color: theme.COLORS.BASIC_ORANGE,
+                  }}>
+                  CONNEXION
                 </Text>
-              )}
-            </Block>
-            <Block flex middle>
-              <Button
-                round
-                size="large"
-                color={theme.COLORS.BASIC_ORANGE}
-                onPress={() => goToAddress()}>
-                Suivant
-              </Button>
-            </Block>
-          </Block>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    </Block>
+              </Pressable>
+            </View>
+          </View>
+        </ImageBackground>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingTop: theme.SIZES.BASE * 0.3,
-    paddingHorizontal: theme.SIZES.BASE,
-    backgroundColor: theme.COLORS.WHITE,
+    paddingRight: height * 0.05,
+    paddingLeft: height * 0.05,
   },
-  social: {
-    width: theme.SIZES.BASE * 3.5,
-    height: theme.SIZES.BASE * 3.5,
-    borderRadius: theme.SIZES.BASE * 1.75,
-    justifyContent: 'center',
+  icon: {
+    marginBottom: height * 0.05,
+    marginTop: height * 0.05,
+  },
+  containerForm: {
+    backgroundColor: theme.COLORS.WHITE,
+    borderRadius: 20,
+    padding: 20,
+    elevation: 4,
+  },
+  forgotPassword: {
+    color: theme.COLORS.BASIC_ORANGE,
   },
 });
 

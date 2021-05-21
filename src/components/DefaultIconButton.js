@@ -15,11 +15,13 @@ export default function DefaultIconButton({icon, onPress, backgroundColor}) {
 const styles = StyleSheet.create({
   buttonStyle: {
     borderWidth: 5,
-    borderColor: theme.COLORS.BASIC_BLUE,
+    borderColor: theme.COLORS.OUTLINED_ORANGE,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 70,
-    height: 70,
+    alignSelf: 'flex-end',
+    width: 60,
+    padding: 0,
+    height: 60,
     borderRadius: 50,
   },
 });
