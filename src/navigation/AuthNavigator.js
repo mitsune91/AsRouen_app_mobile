@@ -8,7 +8,6 @@ const AuthStack = createStackNavigator();
 export const navigationRef = createRef();
 export default function AuthNavigator() {
   const [initialRouteName, setInitialRouteName] = useState('Login');
-  const routeNameRef = useRef();
 
   return (
     <NavigationContainer ref={navigationRef} initialRouteName>
@@ -23,10 +22,6 @@ export default function AuthNavigator() {
           name="RegisterUser"
           options={{headerShown: false}}
           component={RegisterScreen}></AuthStack.Screen>
-        <AuthStack.Screen
-          name="Home"
-          options={{headerShown: false}}
-          component={HomeScreen}></AuthStack.Screen>
       </AuthStack.Navigator>
     </NavigationContainer>
   );

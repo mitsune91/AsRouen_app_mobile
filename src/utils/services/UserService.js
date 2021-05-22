@@ -9,7 +9,7 @@ async function login(email, password) {
   const user = {email: email.trim().toLowerCase(), password: password};
   return new Promise((resolve, reject) => {
     axios
-      .post(`http://10.0.2.2:8090/login`, user)
+      .post(`http://10.0.2.2:8091/login`, user)
       .then(response => {
         if (response && response.status === 200) {
           resolve(response.headers);
@@ -34,9 +34,8 @@ async function register(firstName, lastName, email, password, address) {
 
   return new Promise((resolve, reject) => {
     axios
-      .post(`http://10.0.2.2:8090/user`, user)
+      .post(`http://10.0.2.2:8091/user`, user)
       .then(response => {
-        console.log('ok', response.data);
         resolve(response.data);
       })
       .catch(error => {
@@ -48,9 +47,8 @@ async function register(firstName, lastName, email, password, address) {
 async function findUser(userId) {
   return new Promise((resolve, reject) => {
     axios
-      .get(`http://10.0.2.2:8090/user/` + userId)
+      .get(`http://10.0.2.2:8091/user/` + userId)
       .then(response => {
-        console.log('ok', response.data);
         resolve(response.data);
       })
       .catch(error => {

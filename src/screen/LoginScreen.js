@@ -10,15 +10,16 @@ import {
   ImageBackground,
 } from 'react-native';
 import {Text} from 'react-native-elements';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import theme from '../theme';
 import DefaultInput from '../components/DefaultInput';
 import DefaultIconButton from '../components/DefaultIconButton';
 import DefaultIcon from '../components/DefaultIcon';
 import {signIn} from '../redux/actions/userAction';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import {userService} from '../services/UserService';
+import {userService} from '../utils/services/UserService';
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const {height, width} = Dimensions.get('window');
 
@@ -51,24 +52,30 @@ const Login = ({navigation}) => {
       const emailVal = email.toLowerCase().trim();
       userService
         .login(emailVal, password)
-        .then(response => {
-          const userId = response.userid;
-          axios.defaults.headers.common['authorization'] =
-            response.authorization;
+        .then(async res => {
+          const token = res.authorization;
+          try {
+            await AsyncStorage.setItem('authToken', token);
+          } catch (err) {
+            console.log('errAsync', err);
+          }
+
+          const userId = res.userid;
+          await AsyncStorage.setItem('userId', userId);
+          axios.defaults.headers.common['authorization'] = token;
 
           userService
             .findUser(userId)
             .then(response => {
-              console.log('find', response);
               dispatch(
                 signIn({
                   id: response.userId,
                   email: response.email,
                   firstName: response.firstName,
                   lastName: response.lastName,
+                  token: token,
                 }),
               );
-              navigation.navigate('Home');
             })
             .catch(err => {
               console.log('findERR', err);

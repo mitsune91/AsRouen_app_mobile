@@ -48,11 +48,10 @@ const RegisterScreen = ({route, navigation}) => {
         address,
       )
       .then(response => {
-        console.log('ok', response);
         navigation.navigate('Login');
       })
       .catch(error => {
-        console.log('err', error), console.log('err2');
+        console.log('err', error);
       });
   };
   return (

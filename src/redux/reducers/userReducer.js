@@ -45,7 +45,7 @@ export default (state = initState, action) => {
         email: action.item.email,
         firstName: action.item.firstName,
         lastName: action.item.lastName,
-        devices: action.item.devices,
+        userToken: action.item.userToken,
       };
     }
     case MODIFY_DEVICE: {

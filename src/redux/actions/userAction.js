@@ -8,9 +8,9 @@ export function signIn(data) {
 }
 
 export function signOut() {
-  return dispatch({
+  return {
     type: SIGN_OUT,
-  });
+  };
 }
 
 export function modifyUser(data) {

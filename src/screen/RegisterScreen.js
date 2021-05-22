@@ -10,7 +10,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import {Text, Input} from 'react-native-elements';
-import {userService} from '../services/UserService';
+import {userService} from '../utils/services/UserService';
 // galio component
 import theme from '../theme';
 import DefaultInput from '../components/DefaultInput';
